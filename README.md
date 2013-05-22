@@ -1,4 +1,2 @@
-python-weatherlib
+python-weather-yr
 =================
-
-Get weather from different backends
