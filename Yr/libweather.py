@@ -25,8 +25,8 @@ class Yr:
         return(self.location)
 
     def get_temperature(self):
-        location = (self.location+"/forecast.xml")
+        xmlFile = ("/forecast.xml")
+        location = (self.location+xmlFile)
         get = Connect(location).read()
         for temperature in get[5].iter('temperature'):
             return temperature.attrib
-        return forecast
