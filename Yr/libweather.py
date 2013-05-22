@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/python
 api_url = ("http://www.yr.no/sted/Norge/Telemark/Skien/Skien/varsel_time_for_time.xml")
 
 class Yr:
