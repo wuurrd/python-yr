@@ -1,19 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
 import sys
 import os.path
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from libweather import Yr as Weather
-from libweather import place2url
 
-place = Weather('Norge/Østfold/Halden/Sponvika')
+temp = Weather('Hamar', 'en').get_temperature()
+temp2 = Weather('Porsgrunn', 'nb').get_temperature()
+temp3 = Weather('Oslo', 'nn').get_temperature()
 
-temperature = place.get_temperature()
-
-finder = place2url('Oslo')
-for i in finder.find():
-    print i
-
-print temperature['value'], temperature['unit']
+print("The temperature in Hamar is %s %s") % (temp['value'], temp['unit'])
