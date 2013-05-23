@@ -11,19 +11,25 @@ class Yr:
         Get temperature from yr and return it.
         Returns a dict with 'location', 'value' and 'unit'.
         """
-        location = Location(self.location, self.language).find()
-        api_url = location.encode('utf-8')
-        get = Connect(api_url).read()
-        for temperature in get[5].iter('temperature'):
-            if temperature.attrib:
-                out = {
-                    'unit': temperature.attrib['unit'], 
-                    'value': temperature.attrib['value'], 
-                    'location': self.location,
-                }
-                return out
-            else:
-                return None
+        try:
+            location = Location(self.location, self.language).find()
+            api_url = location.encode('utf-8')
+            get = Connect(api_url).read()
+        except AttributeError:
+            pass
+        try:
+            for temperature in get[5].iter('temperature'):
+                if temperature.attrib:
+                    out = {
+                        'unit': temperature.attrib['unit'], 
+                        'value': temperature.attrib['value'], 
+                        'location': self.location,
+                    }
+                    return out
+                else:
+                    return None
+        except UnboundLocalError:
+            return {'unit': None, 'value': None, 'location': None, }
 
 class Location:
     """
@@ -43,13 +49,17 @@ class Location:
             if data.line_num:
                 csvlist.append(row)
         matches = [x for x in csvlist if self.location in x]
-        out = matches[0][3]
-        if self.language is ('nb'):
-            out = matches[0][1]
-        if self.language is ('nn'):
-            out = matches[0][2]
-        if self.language is ('en'):
+        out = None
+        try:
             out = matches[0][3]
+            if self.language is ('nb'):
+                out = matches[0][1]
+            if self.language is ('nn'):
+                out = matches[0][2]
+            if self.language is ('en'):
+                out = matches[0][3]
+        except IndexError:
+            pass
         return out
 
 class Connect:
