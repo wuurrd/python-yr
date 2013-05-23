@@ -9,19 +9,19 @@ class Yr:
     def get_temperature(self):
         """
         Get temperature from yr and return it.
-        Returns a dict with 'value' and 'unit'.
+        Returns a dict with 'location', 'value' and 'unit'.
         """
         location = Location(self.location, self.language).find()
-        api_url = location.encode("utf-8")
+        api_url = location.encode('utf-8')
         get = Connect(api_url).read()
         for temperature in get[5].iter('temperature'):
             if temperature.attrib:
-                c = {
+                out = {
                     'unit': temperature.attrib['unit'], 
                     'value': temperature.attrib['value'], 
                     'location': self.location,
                 }
-                return c
+                return out
             else:
                 return None
 
@@ -44,11 +44,11 @@ class Location:
                 csvlist.append(row)
         matches = [x for x in csvlist if self.location in x]
         out = matches[0][3]
-        if self.language is ("nb"):
+        if self.language is ('nb'):
             out = matches[0][1]
-        if self.language is ("nn"):
+        if self.language is ('nn'):
             out = matches[0][2]
-        if self.language is ("en"):
+        if self.language is ('en'):
             out = matches[0][3]
         return out
 
