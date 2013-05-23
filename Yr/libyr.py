@@ -3,7 +3,7 @@
 
 class Yr:
     def __init__(self, location, language):
-        self.location = (location)
+        self.location = (location.decode('utf-8'))
         self.language = (language)
 
     def get_temperature(self):
@@ -15,7 +15,15 @@ class Yr:
         api_url = location.encode("utf-8")
         get = Connect(api_url).read()
         for temperature in get[5].iter('temperature'):
-            return temperature.attrib
+            if temperature.attrib:
+                c = {
+                    'unit': temperature.attrib['unit'], 
+                    'value': temperature.attrib['value'], 
+                    'location': self.location,
+                }
+                return c
+            else:
+                return None
 
 class Location:
     """
