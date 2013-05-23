@@ -15,13 +15,14 @@ class place2url:
             if data.line_num:
                 csvlist.append(row)
         matches = [x for x in csvlist if self.location in x]
+        out = matches[0][3]
         if self.language is ("nb"):
-            matches = matches[0][1]
+            out = matches[0][1]
         if self.language is ("nn"):
-            matches = matches[0][2]
+            out = matches[0][2]
         if self.language is ("en"):
-            matches = matches[0][3]
-        return matches
+            out = matches[0][3]
+        return out
 
 class Connect:
     def __init__(self, location):
