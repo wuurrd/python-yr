@@ -6,7 +6,7 @@ api_url = ("http://www.yr.no/sted/")
 class Connect:
     def __init__(self, location):
         self.location = (location)
-        self.url = (api_url+"%s") % (self.location)
+        self.url = (api_url+self.location)
 
     def read(self):
         import xml.etree.cElementTree as et
