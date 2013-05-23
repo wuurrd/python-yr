@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 import urllib2 as urllib
 
 api_url = ("http://www.yr.no/sted/")
@@ -25,7 +26,11 @@ class Yr:
         return(self.location)
 
     def get_temperature(self):
-        xmlFile = ("/forecast.xml")
+	"""
+	Get temperature from yr and return it.
+	Returns a dict with 'value' and 'unit'.
+	"""
+        xmlFile = ("/varsel.xml")
         location = (self.location+xmlFile)
         get = Connect(location).read()
         for temperature in get[5].iter('temperature'):
