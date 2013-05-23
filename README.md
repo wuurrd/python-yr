@@ -1,4 +1,4 @@
-python-weather-yr
+python-yr
 =================
 Library for the norwegian wheather service yr.no in python
 
