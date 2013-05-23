@@ -59,6 +59,7 @@ class Location:
             if self.language is ('en'):
                 out = matches[0][3]
         except IndexError:
+            #TODO: Legg inn oppslag her om ingenting blir funnet i csv
             pass
         return out
 
