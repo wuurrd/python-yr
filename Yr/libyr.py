@@ -13,8 +13,7 @@ class Yr:
         """
         try:
             location = Location(self.location, self.language).find()
-            api_url = location.encode('utf-8')
-            data = Connect(api_url).read()
+            data = Connect(location).read()
         except AttributeError:
             pass
         try:
@@ -37,8 +36,7 @@ class Yr:
         Returns a dict with 'location', 'unit', 'mps' and 'name'.
         """
         location = Location(self.location, self.language).find()
-        api_url = location.encode('utf-8')
-        data = Connect(api_url).read()
+        data = Connect(location).read()
 
         for wind in data[5].iter('windSpeed'):
             if wind.attrib:
@@ -53,15 +51,20 @@ class Yr:
     def wind_direction(self):
         """
         Get wind direction from yr.
-        Returns a dict with 'deg', 'code' and 'name'.
+        Returns a dict with 'location', 'deg', 'code' and 'name'.
         """
-        pass
+        location = Location(self.location, self.language).find()
+        data = Connect(location).read()
 
-    def forecast(self):
-        """
-        Get the forecast from yr.
-        """
-        pass
+        for wind in data[5].iter('windDirection'):
+            if wind.attrib:
+                out = {
+                    'location': self.location,
+                    'deg': wind.attrib['deg'],
+                    'code': wind.attrib['code'],
+                    'name': wind.attrib['name'],
+                }
+                return out
 
 class Location:
     """
@@ -93,7 +96,7 @@ class Location:
         except IndexError:
             #TODO: Legg inn oppslag her om ingenting blir funnet i csv
             pass
-        return out
+        return out.encode('utf-8')
 
 class Connect:
     def __init__(self, location):
