@@ -6,7 +6,7 @@ class Yr:
         self.location = (location.decode('utf-8'))
         self.language = (language)
 
-    def get_temperature(self):
+    def temperature(self):
         """
         Get temperature from yr and return it.
         Returns a dict with 'location', 'value' and 'unit'.
@@ -14,11 +14,11 @@ class Yr:
         try:
             location = Location(self.location, self.language).find()
             api_url = location.encode('utf-8')
-            get = Connect(api_url).read()
+            data = Connect(api_url).read()
         except AttributeError:
             pass
         try:
-            for temperature in get[5].iter('temperature'):
+            for temperature in data[5].iter('temperature'):
                 if temperature.attrib:
                     out = {
                         'unit': temperature.attrib['unit'], 
@@ -30,6 +30,38 @@ class Yr:
                     return None
         except UnboundLocalError:
             return {'unit': None, 'value': None, 'location': None, }
+
+    def wind_speed(self):
+        """
+        Get wind speed from yr.
+        Returns a dict with 'location', 'unit', 'mps' and 'name'.
+        """
+        location = Location(self.location, self.language).find()
+        api_url = location.encode('utf-8')
+        data = Connect(api_url).read()
+
+        for wind in data[5].iter('windSpeed'):
+            if wind.attrib:
+                out = {
+                    'location': self.location,
+                    'mps': wind.attrib['mps'],
+                    'unit': str('mps'),
+                    'name': wind.attrib['name'],
+                }
+                return out
+
+    def wind_direction(self):
+        """
+        Get wind direction from yr.
+        Returns a dict with 'deg', 'code' and 'name'.
+        """
+        pass
+
+    def forecast(self):
+        """
+        Get the forecast from yr.
+        """
+        pass
 
 class Location:
     """

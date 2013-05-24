@@ -6,6 +6,9 @@ sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from libyr import Yr
 
-temp = Yr('Derpelid', 'en').get_temperature()
+weather = Yr('Tønsberg', 'en')
+temperature = weather.temperature()
+windspeed = weather.wind_speed()
 
-print("The temperature in %s is %s %s") % (temp['location'], temp['value'], temp['unit'])
+print("The wind in %s is %s %s") % (windspeed['location'], windspeed['mps'], windspeed['unit'])
+print("The temperature in %s is %s %s") % (temperature['location'], temperature['value'], temperature['unit'])
