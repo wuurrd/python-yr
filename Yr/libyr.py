@@ -93,9 +93,11 @@ class Location:
             if self.language is ('en'):
                 out = matches[0][3]
         except IndexError:
-            #TODO: Legg inn oppslag her om ingenting blir funnet i csv
             pass
-        return out.encode('utf-8')
+        if out is not None:
+            return out.encode('utf-8')
+        else:
+            raise ValueError('Search got nothing')
 
 class Connect:
     def __init__(self, location):
@@ -103,6 +105,8 @@ class Connect:
         self.url = (self.location)
 
     def read(self):
+        if self.url is None:
+            raise ValueError('No url found')
         import urllib2 as urllib
         import xml.etree.cElementTree as et
         req = urllib.Request(self.url, None, {'user-agent':'yr/wckd'})
