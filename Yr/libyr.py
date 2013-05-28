@@ -105,8 +105,6 @@ class Connect:
         self.url = (self.location)
 
     def read(self):
-        if self.url is None:
-            raise ValueError('No url found')
         import urllib2 as urllib
         import xml.etree.cElementTree as et
         req = urllib.Request(self.url, None, {'user-agent':'yr/wckd'})
