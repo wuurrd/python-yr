@@ -83,7 +83,6 @@ class Location:
         for num, row in enumerate(data):
             if self.location in row[0]:
                 matches.append(row)
-        out = None
         try:
             out = matches[0][3]
             if self.language is ('nb'):
