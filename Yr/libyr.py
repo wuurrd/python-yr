@@ -79,11 +79,10 @@ class Location:
         import unicodecsv
         csv_file = open('places_norway.csv', 'r')
         data = unicodecsv.reader(csv_file)
-        csvlist = []
-        for row in data:
-            if data.line_num:
-                csvlist.append(row)
-        matches = [x for x in csvlist if self.location in x]
+        matches = []
+        for num, row in enumerate(data):
+            if self.location in row[0]:
+                matches.append(row)
         out = None
         try:
             out = matches[0][3]

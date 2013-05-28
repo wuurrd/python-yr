@@ -6,7 +6,7 @@ sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from libyr import Yr
 
-weather = Yr('Tønsberg', 'nb')
+weather = Yr('Ørje', 'nb')
 temperature = weather.temperature()
 windspeed = weather.wind_speed()
 winddirection = weather.wind_direction()
