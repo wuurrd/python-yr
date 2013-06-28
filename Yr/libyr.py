@@ -112,3 +112,14 @@ class Connect:
         r = (f.read())
         out = et.fromstring(r)
         return out
+
+class Cache:
+    def __init__(self, location):
+        self.location = (location)
+        
+    def create(self):
+        pass
+    def destroy(self):
+        pass
+    def find(self):
+        pass
