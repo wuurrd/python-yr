@@ -14,6 +14,7 @@ class Yr:
         try:
             location = Location(self.location, self.language).find()
             data = Connect(location).read()
+            cache_test = Cache(location).find()
         except AttributeError:
             pass
         try:
@@ -115,11 +116,20 @@ class Connect:
 
 class Cache:
     def __init__(self, location):
+        import os
         self.location = (location)
-        
+        self.cache_dir = ("/tmp/python-yr/")
+
+        if not os.path.exists(self.cache_dir):
+            os.makedirs(self.cache_dir)
+
     def create(self):
         pass
     def destroy(self):
         pass
     def find(self):
+        """
+        Find the file and timestamp. 
+        Update cache if timestamp is 10 minutes or older.
+        """
         pass
