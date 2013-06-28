@@ -12,9 +12,9 @@ class Yr:
         Returns a dict with 'location', 'value' and 'unit'.
         """
         try:
-            location = Location(self.location, self.language).find()
-            data = Connect(location).read()
-            cache_test = Cache(location).find()
+            location = (Location(self.location, self.language).find())
+            data = (Connect(location).read())
+            cache_test = (Cache(location).find())
         except AttributeError:
             pass
         try:
@@ -36,8 +36,8 @@ class Yr:
         Get wind speed from yr.
         Returns a dict with 'location', 'unit', 'mps' and 'name'.
         """
-        location = Location(self.location, self.language).find()
-        data = Connect(location).read()
+        location = (Location(self.location, self.language).find())
+        data = (Connect(location).read())
 
         for wind in data[5].iter('windSpeed'):
             if wind.attrib:
@@ -78,8 +78,8 @@ class Location:
 
     def find(self):
         import unicodecsv
-        csv_file = open('places_norway.csv', 'r')
-        data = unicodecsv.reader(csv_file)
+        csv_file = (open('places_norway.csv', 'r'))
+        data = (unicodecsv.reader(csv_file))
         matches = []
         for num, row in enumerate(data):
             if self.location in row[0]:
@@ -87,11 +87,11 @@ class Location:
         try:
             out = matches[0][3]
             if self.language is ('nb'):
-                out = matches[0][1]
+                out = (matches[0][1])
             if self.language is ('nn'):
-                out = matches[0][2]
+                out = (matches[0][2])
             if self.language is ('en'):
-                out = matches[0][3]
+                out = (matches[0][3])
         except IndexError:
             pass
         if out is not None:
@@ -107,11 +107,11 @@ class Connect:
     def read(self):
         import urllib2 as urllib
         import xml.etree.cElementTree as et
-        req = urllib.Request(self.url, None, {'user-agent':'yr/wckd'})
+        req = (urllib.Request(self.url, None, {'user-agent':'yr/wckd'}))
         opener = (urllib.build_opener())
         f = (opener.open(req))
         r = (f.read())
-        out = et.fromstring(r)
+        out = (et.fromstring(r))
         return out
 
 class Cache:
