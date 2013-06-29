@@ -1,13 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from decorators import cacheit
 
 class Yr:
     def __init__(self, location, language):
         self.location = (location.decode('utf-8'))
         self.language = (language)
 
-    @cacheit(600)
     def temperature(self):
         """
         Get temperature from yr and return it.
