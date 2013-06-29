@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import json, datetime
 
 class Yr:
     def __init__(self, location, language):
@@ -25,6 +26,7 @@ class Yr:
                         'value': temperature.attrib['value'], 
                         'location': self.location,
                     }
+                    Cache(self.location).create(out)
                     return out
                 else:
                     return None
@@ -109,9 +111,8 @@ class Connect:
         import xml.etree.cElementTree as et
         req = (urllib.Request(self.url, None, {'user-agent':'yr/wckd'}))
         opener = (urllib.build_opener())
-        f = (opener.open(req))
-        r = (f.read())
-        out = (et.fromstring(r))
+        f = (opener.open(req).read())
+        out = (et.fromstring(f))
         return out
 
 class Cache:
@@ -123,13 +124,13 @@ class Cache:
         if not os.path.exists(self.cache_dir):
             os.makedirs(self.cache_dir)
 
-    def create(self):
+    def create(self, data):
+        print "DEBUG:", json.dumps(data)
         pass
     def destroy(self):
         pass
     def find(self):
-        """
-        Find the file and timestamp. 
+        """Find the file and timestamp. 
         Update cache if timestamp is 10 minutes or older.
         """
         pass
