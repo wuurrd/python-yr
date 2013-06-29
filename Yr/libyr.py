@@ -1,11 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import json, datetime
+import os, json, datetime
 
 class Yr:
     def __init__(self, location, language):
         self.location = (location.decode('utf-8'))
         self.language = (language)
+        self.now = datetime.datetime.now()
 
     def temperature(self):
         """
@@ -25,6 +26,7 @@ class Yr:
                         'unit': temperature.attrib['unit'], 
                         'value': temperature.attrib['value'], 
                         'location': self.location,
+                        'timestamp': self.now.strftime("%d.%m.%Y %H:%M:%S")
                     }
                     Cache(self.location).create(out)
                     return out
@@ -48,6 +50,7 @@ class Yr:
                     'mps': wind.attrib['mps'],
                     'unit': str('mps'),
                     'name': wind.attrib['name'],
+                    'timestamp': self.now.strftime("%d.%m.%Y %H:%M:%S")
                 }
                 return out
 
@@ -66,6 +69,7 @@ class Yr:
                     'deg': wind.attrib['deg'],
                     'code': wind.attrib['code'],
                     'name': wind.attrib['name'],
+                    'timestamp': self.now.strftime("%d.%m.%Y %H:%M:%S")
                 }
                 return out
 
@@ -126,6 +130,11 @@ class Cache:
 
     def create(self, data):
         print "DEBUG:", json.dumps(data)
+        if not os.path.isfile(self.cache_dir+self.location):
+            print self.cache_dir+self.location
+            cjf = open(self.cache_dir+self.location)
+            cfj.write(data)
+            cfj.close()
         pass
     def destroy(self):
         pass
