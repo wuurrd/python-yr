@@ -155,3 +155,11 @@ class Cache:
         cf = open(self.cache_file).read()
         out = json.loads(cf)
         return out
+
+    def remove(self):
+        import errno
+        try:
+            os.remove(self.cache_file)
+        except OSError, e:
+            if e.errno != errno.ENOENT:
+                raise
