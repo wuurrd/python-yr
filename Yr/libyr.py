@@ -14,7 +14,7 @@ class Yr:
         Get temperature from yr and return it.
         """
         cache = Cache(self.location, "temperature")
-        if cache.is_cached() and cache.is_fresh():
+        if cache.exists() and cache.is_fresh():
             return cache.read()
         else:
             location = (Location(self.location, self.language).find())
@@ -27,7 +27,7 @@ class Yr:
                         'location': self.location,
                         'timestamp': self.now.strftime("%d.%m.%Y %H:%M:%S")
                     }
-                    cache.create(out)
+                    cache.write(out)
                     out = cache.read()
                     return out
 
@@ -36,7 +36,7 @@ class Yr:
         Get wind speed from yr.
         """
         cache = Cache(self.location, "wind_speed")
-        if cache.is_cached() and cache.is_fresh():
+        if cache.exists() and cache.is_fresh():
             return cache.read()
         else:
             location = (Location(self.location, self.language).find())
@@ -50,7 +50,7 @@ class Yr:
                         'name': wind.attrib['name'],
                         'timestamp': self.now.strftime("%d.%m.%Y %H:%M:%S")
                     }
-                    cache.create(out)
+                    cache.write(out)
                     out = cache.read()
                     return out
 
@@ -59,7 +59,7 @@ class Yr:
         Get wind direction from yr.
         """
         cache = Cache(self.location, "wind_direction")
-        if cache.is_cached() and cache.is_fresh():
+        if cache.exists() and cache.is_fresh():
             return cache.read()
         else:
             location = Location(self.location, self.language).find()
@@ -73,6 +73,6 @@ class Yr:
                         'name': wind.attrib['name'],
                         'timestamp': self.now.strftime("%d.%m.%Y %H:%M:%S")
                     }
-                    cache.create(out)
+                    cache.write(out)
                     out = cache.read()
                     return out

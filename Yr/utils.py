@@ -57,12 +57,12 @@ class Cache:
         if not os.path.exists(self.cache_dir):
             os.makedirs(self.cache_dir)
 
-    def create(self, data):
+    def write(self, data):
         cf = open(self.cache_file, "w")
         cf.write(json.dumps(data))
         cf.close()
 
-    def is_cached(self):
+    def exists(self):
         if os.path.isfile(self.cache_file):
             return True
         else:
