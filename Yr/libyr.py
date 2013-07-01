@@ -10,7 +10,7 @@ class Yr:
         self.language = (language)
         self.yr_credit = {}
         self.yr_credit['credit'] = { "text": "Værvarsel fra yr.no, levert av NRK og Meteorologisk institutt", 
-                            "url": "http://www.yr.no/sted/Norge/Vestfold/Tønsberg/Tønsberg_domkirke/", }
+                            "url": "http://www.yr.no/", }
 
     def temperature(self):
         """
