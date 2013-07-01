@@ -8,6 +8,9 @@ class Yr:
     def __init__(self, location, language):
         self.location = (location.decode('utf-8'))
         self.language = (language)
+        self.yr_credit = {}
+        self.yr_credit['credit'] = { "text": "Værvarsel fra yr.no, levert av NRK og Meteorologisk institutt", 
+                            "url": "http://www.yr.no/sted/Norge/Vestfold/Tønsberg/Tønsberg_domkirke/", }
 
     def temperature(self):
         """
@@ -28,6 +31,7 @@ class Yr:
                     'value': temperature.attrib['value'],
                     'location': self.location,
                  })
+            out.append(self.yr_credit)
             cache.write(json.dumps(out))
             return json.loads(cache.read())
 
@@ -50,6 +54,7 @@ class Yr:
                     'unit': str('mps'),
                     'name': wind.attrib['name'],
                 })
+            out.append(self.yr_credit)
             cache.write(json.dumps(out))
             return json.loads(cache.read())
 
@@ -73,6 +78,7 @@ class Yr:
                     'code': wind.attrib['code'],
                     'name': wind.attrib['name'],
                 })
+            out.append(self.yr_credit)
             cache.write(json.dumps(out))
             return json.loads(cache.read())
 
@@ -94,5 +100,6 @@ class Yr:
                     child[1].tag: child[1].text,
                     'location': self.location,
                 })
+        days.append(self.yr_credit)
         cache.write(json.dumps(days))
         return json.loads(cache.read())
