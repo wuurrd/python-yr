@@ -71,9 +71,9 @@ class Cache:
     def is_fresh(self):
         cf = open(self.cache_file).read()
         cfjs = json.loads(cf)
-        timestamp = datetime.datetime.strptime(cfjs['timestamp'], "%d.%m.%Y %H:%M:%S")
+        timestamp = datetime.datetime.strptime(cfjs[0]['timestamp'], "%d.%m.%Y %H:%M:%S")
         out = False
-        if datetime.datetime.now() - timestamp <= datetime.timedelta(minutes = 10):
+        if datetime.datetime.now() - timestamp <= datetime.timedelta(minutes = 1):
             out = True
         return out
 

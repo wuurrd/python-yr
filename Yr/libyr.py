@@ -19,14 +19,15 @@ class Yr:
         else:
             location = (Location(self.location, self.language).find())
             data = (Connect(location).read())
+            out = []
             for temperature in data[5].iter('temperature'):
                 if temperature.attrib:
-                    out = {
+                    out.append({
                         'unit': temperature.attrib['unit'],
                         'value': temperature.attrib['value'],
                         'location': self.location,
-                        'timestamp': self.now.strftime("%d.%m.%Y %H:%M:%S")
-                    }
+                        'timestamp': self.now.strftime("%d.%m.%Y %H:%M:%S"),
+                    })
                     cache.write(out)
                     out = cache.read()
                     return out
@@ -41,18 +42,18 @@ class Yr:
         else:
             location = (Location(self.location, self.language).find())
             data = (Connect(location).read())
+            out = []
             for wind in data[5].iter('windSpeed'):
                 if wind.attrib:
-                    out = {
+                    out.append({
                         'location': self.location,
                         'mps': wind.attrib['mps'],
                         'unit': str('mps'),
                         'name': wind.attrib['name'],
-                        'timestamp': self.now.strftime("%d.%m.%Y %H:%M:%S")
-                    }
+                        'timestamp': self.now.strftime("%d.%m.%Y %H:%M:%S"),
+                    })
                     cache.write(out)
-                    out = cache.read()
-                    return out
+                    return cache.read()
 
     def wind_direction(self):
         """
@@ -64,15 +65,35 @@ class Yr:
         else:
             location = Location(self.location, self.language).find()
             data = Connect(location).read()
+            out = []
             for wind in data[5].iter('windDirection'):
                 if wind.attrib:
-                    out = {
+                    out.append({
                         'location': self.location,
                         'deg': wind.attrib['deg'],
                         'code': wind.attrib['code'],
                         'name': wind.attrib['name'],
-                        'timestamp': self.now.strftime("%d.%m.%Y %H:%M:%S")
-                    }
+                        'timestamp': self.now.strftime("%d.%m.%Y %H:%M:%S"),
+                    })
                     cache.write(out)
-                    out = cache.read()
-                    return out
+                    return cache.read()
+
+    def forecast(self):
+        cache = Cache(self.location, "forecast")
+        if cache.exists() and cache.is_fresh():
+            return cache.read()
+        else:
+            location = Location(self.location, self.language).find()
+            data = Connect(location).read()
+            days = []
+            for items in data[5][0].iter('text'):
+                for child in items[0]:
+                    days.append({
+                        'from': child.get('from'), 
+                        'to': child.get('to'), 
+                        child[0].tag: child[0].text, 
+                        child[1].tag: child[1].text,
+                        'timestamp': self.now.strftime("%d.%m.%Y %H:%M:%S"),
+                        })
+                cache.write(days)
+                return cache.read()
