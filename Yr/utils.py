@@ -44,71 +44,51 @@ class Connect:
 
     def read(self):
         cache = Cache(self.loc_hash, "varsel")
-        if cache.xml_exists() and cache.xml_is_fresh():
-            return (et.fromstring(cache.xml_read()))
+        if cache.exists() and cache.is_fresh():
+            #print "DEBUG: read saying cache exists"
+            return (cache.read())
         else:
+            #print "DEBUG: no cache"
             req = (urllib.Request(self.url, None, {'user-agent':'yr/wckd'}))
             opener = (urllib.build_opener())
             f = (opener.open(req).read())
-            cache.xml_write(f)
-            return (et.fromstring(cache.xml_read()))
+            cache.write(f)
+            return (cache.read())
 
 class Cache:
     def __init__(self, location, cf):
         self.location = (location)
         self.cache_dir = ("/tmp/python-yr/")
         self.cache_file = (self.cache_dir+self.location+"."+cf)
-        self.xml_file = (self.cache_dir+location+".xml")
 
         if not os.path.exists(self.cache_dir):
             os.makedirs(self.cache_dir)
 
     def write(self, data):
         cf = open(self.cache_file, "w")
-        cf.write(json.dumps(data, indent=4))
+        #print "DEBUG: cache write"
+        cf.write(data)
         cf.close()
 
-    def xml_write(self, data):
-        xml_file = open(self.xml_file, "w") 
-        xml_file.write(data)
-        xml_file.close()
-
-    def xml_exists(self):
-       if os.path.isfile(self.xml_file):
-           return True
-       else:
-           return False
-
-    def xml_is_fresh(self):
-        modified = (os.path.getmtime(self.xml_file))
+    def is_fresh(self):
+        modified = (os.path.getmtime(self.cache_file))
         out = False
         if datetime.datetime.now() - datetime.datetime.fromtimestamp(modified) <= datetime.timedelta(minutes = 10):
             out = True
+        #print "DEBUG: cache is fresh:", out
         return out
-
-    def xml_read(self):
-        xml_file = open(self.xml_file).read()
-        return xml_file
 
     def exists(self):
         if os.path.isfile(self.cache_file):
+            #print "DEBUG: cache exists"
             return True
         else:
             return False
 
-    def is_fresh(self):
-        cf = open(self.cache_file).read()
-        cfjs = json.loads(cf)
-        timestamp = datetime.datetime.strptime(cfjs[0]['timestamp'], "%d.%m.%Y %H:%M:%S")
-        out = False
-        if datetime.datetime.now() - timestamp <= datetime.timedelta(minutes = 10):
-            out = True
-        return out
-
     def read(self):
         cf = open(self.cache_file).read()
-        out = json.loads(cf)
-        return out
+        #print "DEBUG: cache is read"
+        return cf
 
     def remove(self):
         try:
