@@ -93,7 +93,8 @@ class Yr:
                         'to': child.get('to'), 
                         child[0].tag: child[0].text, 
                         child[1].tag: child[1].text,
+                        'location': self.location,
                         'timestamp': self.now.strftime("%d.%m.%Y %H:%M:%S"),
-                        })
+                      })
                 cache.write(days)
                 return cache.read()
