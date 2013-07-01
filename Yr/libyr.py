@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from utils import Connect, Location
+from utils import Connect, Location, Cache
 import datetime, json
 import xml.etree.cElementTree as et
 
@@ -13,6 +13,10 @@ class Yr:
         """
         Get temperature from yr and return it.
         """
+        cache = Cache(self.location, "temperature")
+        if cache.exists() and cache.is_fresh():
+            return json.loads(cache.read())
+
         location = (Location(self.location, self.language).find())
         data = (Connect(location).read())
         data = (et.fromstring(data)) 
@@ -24,12 +28,16 @@ class Yr:
                     'value': temperature.attrib['value'],
                     'location': self.location,
                  })
-                return json.dumps(out)
+            cache.write(json.dumps(out))
+            return json.loads(cache.read())
 
     def wind_speed(self):
         """
         Get wind speed from yr.
         """
+        cache = Cache(self.location, "windspeed")
+        if cache.exists() and cache.is_fresh():
+            return json.loads(cache.read())
         location = (Location(self.location, self.language).find())
         data = (Connect(location).read())
         data = (et.fromstring(data))
@@ -42,12 +50,17 @@ class Yr:
                     'unit': str('mps'),
                     'name': wind.attrib['name'],
                 })
-                return json.dumps(out)
+            cache.write(json.dumps(out))
+            return json.loads(cache.read())
 
     def wind_direction(self):
         """
         Get wind direction from yr.
         """
+        cache = Cache(self.location, "wind_direction")
+        if cache.exists() and cache.is_fresh():
+            return json.loads(cache.read())
+
         location = Location(self.location, self.language).find()
         data = (Connect(location).read())
         data = (et.fromstring(data))
@@ -60,15 +73,20 @@ class Yr:
                     'code': wind.attrib['code'],
                     'name': wind.attrib['name'],
                 })
-                return json.dumps(out)
+            cache.write(json.dumps(out))
+            return json.loads(cache.read())
 
     def forecast(self):
+        cache = Cache(self.location, "forecast")
+        if cache.exists() and cache.is_fresh():
+            return json.loads(cache.read())
+
         location = Location(self.location, self.language).find()
         data = (Connect(location).read())
         data = (et.fromstring(data))
         days = []
-        for items in data[5][0].iter('text'):
-            for child in items[0]:
+        for parent in data[5][0].iter('text'):
+            for child in parent[0]:
                 days.append({
                     'from': child.get('from'), 
                     'to': child.get('to'), 
@@ -76,4 +94,5 @@ class Yr:
                     child[1].tag: child[1].text,
                     'location': self.location,
                 })
-            return json.dumps(days)
+        cache.write(json.dumps(days))
+        return json.loads(cache.read())
