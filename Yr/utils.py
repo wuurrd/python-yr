@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os, json, datetime
+import os, errno, json, datetime, hashlib
+import xml.etree.cElementTree as et
+import urllib2 as urllib
+import unicodecsv
 
 class Location:
     """
@@ -12,7 +15,6 @@ class Location:
         self.language = (language)
 
     def find(self):
-        import unicodecsv
         csv_file = (open('places_norway.csv', 'r'))
         data = (unicodecsv.reader(csv_file))
         matches = []
@@ -38,29 +40,55 @@ class Connect:
     def __init__(self, location):
         self.location = (location)
         self.url = (self.location)
+        self.loc_hash = hashlib.sha256(self.location).hexdigest()
 
     def read(self):
-        import urllib2 as urllib
-        import xml.etree.cElementTree as et
-        req = (urllib.Request(self.url, None, {'user-agent':'yr/wckd'}))
-        opener = (urllib.build_opener())
-        f = (opener.open(req).read())
-        out = (et.fromstring(f))
-        return out
+        cache = Cache(self.loc_hash, "varsel")
+        if cache.xml_exists() and cache.xml_is_fresh():
+            return (et.fromstring(cache.xml_read()))
+        else:
+            req = (urllib.Request(self.url, None, {'user-agent':'yr/wckd'}))
+            opener = (urllib.build_opener())
+            f = (opener.open(req).read())
+            cache.xml_write(f)
+            return (et.fromstring(cache.xml_read()))
 
 class Cache:
     def __init__(self, location, cf):
         self.location = (location)
         self.cache_dir = ("/tmp/python-yr/")
         self.cache_file = (self.cache_dir+self.location+"."+cf)
+        self.xml_file = (self.cache_dir+location+".xml")
 
         if not os.path.exists(self.cache_dir):
             os.makedirs(self.cache_dir)
 
     def write(self, data):
         cf = open(self.cache_file, "w")
-        cf.write(json.dumps(data))
+        cf.write(json.dumps(data, indent=4))
         cf.close()
+
+    def xml_write(self, data):
+        xml_file = open(self.xml_file, "w") 
+        xml_file.write(data)
+        xml_file.close()
+
+    def xml_exists(self):
+       if os.path.isfile(self.xml_file):
+           return True
+       else:
+           return False
+
+    def xml_is_fresh(self):
+        modified = (os.path.getmtime(self.xml_file))
+        out = False
+        if datetime.datetime.now() - datetime.datetime.fromtimestamp(modified) <= datetime.timedelta(minutes = 10):
+            out = True
+        return out
+
+    def xml_read(self):
+        xml_file = open(self.xml_file).read()
+        return xml_file
 
     def exists(self):
         if os.path.isfile(self.cache_file):
@@ -83,7 +111,6 @@ class Cache:
         return out
 
     def remove(self):
-        import errno
         try:
             os.remove(self.cache_file)
         except OSError, e:
