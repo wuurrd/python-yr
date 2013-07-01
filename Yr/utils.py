@@ -73,7 +73,7 @@ class Cache:
         cfjs = json.loads(cf)
         timestamp = datetime.datetime.strptime(cfjs[0]['timestamp'], "%d.%m.%Y %H:%M:%S")
         out = False
-        if datetime.datetime.now() - timestamp <= datetime.timedelta(minutes = 1):
+        if datetime.datetime.now() - timestamp <= datetime.timedelta(minutes = 10):
             out = True
         return out
 
