@@ -114,7 +114,6 @@ class Yr:
         data = (Connect(location).read())
         data = (et.fromstring(data))
         observations = {}
-        obs_list = []
         for parent in data[6].iter('weatherstation'):
             stno = parent.attrib['stno']
             observations[stno] = parent.attrib
