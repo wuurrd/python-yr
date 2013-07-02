@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import os, errno, datetime, hashlib
-import xml.etree.cElementTree as et
 import urllib2 as urllib
 import unicodecsv
 
