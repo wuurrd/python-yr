@@ -33,7 +33,7 @@ class Yr:
                  })
             out.append(self.yr_credit)
             cache.write(json.dumps(out))
-            return json.loads(cache.read())
+            return json.dumps(out)
 
     def wind_speed(self):
         """
@@ -42,6 +42,7 @@ class Yr:
         cache = Cache(self.location, "windspeed")
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
+
         location = (Location(self.location, self.language).find())
         data = (Connect(location).read())
         data = (et.fromstring(data))
@@ -56,7 +57,7 @@ class Yr:
                 })
             out.append(self.yr_credit)
             cache.write(json.dumps(out))
-            return json.loads(cache.read())
+            return json.dumps(out)
 
     def wind_direction(self):
         """
@@ -70,17 +71,17 @@ class Yr:
         data = (Connect(location).read())
         data = (et.fromstring(data))
         out = []
-        for wind in data[5].iter('windDirection'):
-            if wind.attrib:
+        for parent in data[5].iter('windDirection'):
+            if parent.attrib:
                 out.append({
                     'location': self.location,
-                    'deg': wind.attrib['deg'],
-                    'code': wind.attrib['code'],
-                    'name': wind.attrib['name'],
+                    'deg': parent.attrib['deg'],
+                    'code': parent.attrib['code'],
+                    'name': parent.attrib['name'],
                 })
             out.append(self.yr_credit)
             cache.write(json.dumps(out))
-            return json.loads(cache.read())
+            return json.dumps(out)
 
     def forecast(self):
         cache = Cache(self.location, "forecast")
@@ -102,4 +103,24 @@ class Yr:
                 })
         days.append(self.yr_credit)
         cache.write(json.dumps(days))
-        return json.loads(cache.read())
+        return json.dumps(days)
+
+    def observations(self):
+        cache = Cache(self.location, "observations")
+        if cache.exists() and cache.is_fresh():
+            return json.loads(cache.read())
+
+        location = Location(self.location, self.language).find()
+        data = (Connect(location).read())
+        data = (et.fromstring(data))
+        observations = {}
+        obs_list = []
+        for parent in data[6].iter('weatherstation'):
+            stno = parent.attrib['stno']
+            observations[stno] = parent.attrib
+            for child in parent:
+                tag = child.tag
+                observations[stno][tag] = child.attrib
+        observations['credit'] = self.yr_credit
+        cache.write(json.dumps(observations))
+        return json.dumps(observations)
