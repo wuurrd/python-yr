@@ -125,4 +125,6 @@ class Yr:
             if parent.attrib:
                 location_list.append(parent.attrib)
         location['data'] = location_list
+        location['credit'] = self.yr_credit
+        cache.write(json.dumps(location))
         return location
