@@ -120,10 +120,14 @@ class Yr:
         data = (et.fromstring(data))
         location_list = []
         location = {}
-        #TODO: Add name, type and country to output
+        #TODO: Make this more nice :-)
         for parent in data[0]:
             if parent.attrib:
                 location_list.append(parent.attrib)
+            else:
+                location_list.append({
+                    parent.tag: parent.text
+                })
         location['data'] = location_list
         location['credit'] = self.yr_credit
         cache.write(json.dumps(location))
