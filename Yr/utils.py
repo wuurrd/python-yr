@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os, errno, datetime, hashlib
+import os, errno, datetime, hashlib, tempfile
 import urllib2 as urllib
 import unicodecsv
 
@@ -55,11 +55,8 @@ class Connect:
 class Cache:
     def __init__(self, location, cf):
         self.location = (location)
-        self.cache_dir = ("/tmp/python-yr/")
-        self.cache_file = (self.cache_dir+self.location+"."+cf)
-
-        if not os.path.exists(self.cache_dir):
-            os.makedirs(self.cache_dir)
+        self.temp_dir = (tempfile.gettempdir()+"/")
+        self.cache_file = (self.temp_dir+self.location+"."+cf)
 
     def write(self, data):
         cf = open(self.cache_file, "w")
