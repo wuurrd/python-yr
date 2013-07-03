@@ -122,6 +122,7 @@ class Yr:
         location = {}
         #TODO: Add name, type and country to output
         for parent in data[0]:
-            location_list.append(parent.attrib)
+            if parent.attrib:
+                location_list.append(parent.attrib)
         location['data'] = location_list
         return location
