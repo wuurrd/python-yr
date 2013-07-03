@@ -9,6 +9,7 @@ setup(name='python-yr',
       author_email='alexander.l.hansen@gmail.com',
       url='https://github.com/wckd/python-yr',
       packages=['yr'],
-      package_data={'': ['places_norway.csv']},
+      package_data = {'yr': ['data/*.csv'] },
+      include_package_data=True,
       install_requires=['unicodecsv'],
      )

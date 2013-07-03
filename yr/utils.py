@@ -14,7 +14,9 @@ class Location:
         self.language = (language)
 
     def find(self):
-        csv_file = (open('data/places_norway.csv', 'r'))
+        this_dir, this_filename = os.path.split(__file__)
+        DATA_PATH = os.path.join(this_dir, "data", "places_norway.csv")
+        csv_file = (open(DATA_PATH, 'r'))
         data = (unicodecsv.reader(csv_file))
         matches = []
         for num, row in enumerate(data):
