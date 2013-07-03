@@ -18,8 +18,8 @@ class Yr:
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
 
-        location = (Location(self.location, self.language).find())
-        data = (Connect(location).read())
+        getlocation = (Location(self.location, self.language).find())
+        data = (Connect(getlocation).read())
         data = (et.fromstring(data)) 
         out = {}
         for parent in data[5].iter('temperature'):
@@ -37,8 +37,8 @@ class Yr:
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
 
-        location = (Location(self.location, self.language).find())
-        data = (Connect(location).read())
+        getlocation = (Location(self.location, self.language).find())
+        data = (Connect(getlocation).read())
         data = (et.fromstring(data))
         out = {}
         for parent in data[5].iter('windSpeed'):
@@ -56,8 +56,8 @@ class Yr:
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
 
-        location = Location(self.location, self.language).find()
-        data = (Connect(location).read())
+        getlocation = (Location(self.location, self.language).find())
+        data = (Connect(getlocation).read())
         data = (et.fromstring(data))
         out = {}
         for parent in data[5].iter('windDirection'):
@@ -72,8 +72,8 @@ class Yr:
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
 
-        location = Location(self.location, self.language).find()
-        data = (Connect(location).read())
+        getlocation = (Location(self.location, self.language).find())
+        data = (Connect(getlocation).read())
         data = (et.fromstring(data))
         days = []
         for parent in data[5][0].iter('text'):
@@ -95,8 +95,8 @@ class Yr:
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
 
-        location = Location(self.location, self.language).find()
-        data = (Connect(location).read())
+        getlocation = (Location(self.location, self.language).find())
+        data = (Connect(getlocation).read())
         data = (et.fromstring(data))
         observations = {}
         observations['data'] = {}
@@ -109,3 +109,19 @@ class Yr:
         observations['credit'] = self.yr_credit
         cache.write(json.dumps(observations))
         return observations
+
+    def location_info(self):
+        cache = Cache(self.location, "location")
+        if cache.exists() and cache.is_fresh():
+            return json.loads(cache.read())
+
+        getlocation = (Location(self.location, self.language).find())
+        data = (Connect(getlocation).read())
+        data = (et.fromstring(data))
+        location_list = []
+        location = {}
+        #TODO: Add name, type and country to output
+        for parent in data[0]:
+            location_list.append(parent.attrib)
+        location['data'] = location_list
+        return location
