@@ -42,9 +42,9 @@ class Yr:
         data = (Connect(location).read())
         data = (et.fromstring(data))
         out = {}
-        for wind in data[5].iter('windSpeed'):
-            if wind.attrib:
-                out['data'] = (wind.attrib)
+        for parent in data[5].iter('windSpeed'):
+            if parent.attrib:
+                out['data'] = (parent.attrib)
         out['credit'] = (self.yr_credit)
         cache.write(json.dumps(out))
         return out
@@ -84,7 +84,6 @@ class Yr:
                     'to': child.get('to'), 
                     child[0].tag: child[0].text, 
                     child[1].tag: child[1].text,
-                    'location': self.location,
                 })
         out = {}
         out['data'] = (days)
