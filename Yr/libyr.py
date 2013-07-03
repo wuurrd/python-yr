@@ -103,7 +103,7 @@ class Yr:
                 })
         days.append(self.yr_credit)
         cache.write(json.dumps(days))
-        return json.dumps(days)
+        return days
 
     def observations(self):
         cache = Cache(self.location, "observations")
@@ -122,4 +122,4 @@ class Yr:
                 observations[stno][tag] = child.attrib
         observations['credit'] = self.yr_credit
         cache.write(json.dumps(observations))
-        return json.dumps(observations)
+        return observations
