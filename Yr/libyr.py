@@ -8,8 +8,7 @@ class Yr:
     def __init__(self, location, language):
         self.location = (location.decode('utf-8'))
         self.language = (language)
-        self.yr_credit = {}
-        self.yr_credit['credit'] = { "text": "Værvarsel fra yr.no, levert av NRK og Meteorologisk institutt", 
+        self.yr_credit = {"text": "Værvarsel fra yr.no, levert av NRK og Meteorologisk institutt", 
                             "url": "http://www.yr.no/", }
 
     def temperature(self):
@@ -23,17 +22,13 @@ class Yr:
         location = (Location(self.location, self.language).find())
         data = (Connect(location).read())
         data = (et.fromstring(data)) 
-        out = []
-        for temperature in data[5].iter('temperature'):
-            if temperature.attrib:
-                out.append({
-                    'unit': temperature.attrib['unit'],
-                    'value': temperature.attrib['value'],
-                    'location': self.location,
-                 })
-            out.append(self.yr_credit)
-            cache.write(json.dumps(out))
-            return out
+        out = {}
+        for parent in data[5].iter('temperature'):
+            if parent.attrib:
+                out['data'] = (parent.attrib)
+        out['credit'] = (self.yr_credit)
+        cache.write(json.dumps(out))
+        return out
 
     def wind_speed(self):
         """
@@ -46,18 +41,13 @@ class Yr:
         location = (Location(self.location, self.language).find())
         data = (Connect(location).read())
         data = (et.fromstring(data))
-        out = []
+        out = {}
         for wind in data[5].iter('windSpeed'):
             if wind.attrib:
-                out.append({
-                    'location': self.location,
-                    'mps': wind.attrib['mps'],
-                    'unit': str('mps'),
-                    'name': wind.attrib['name'],
-                })
-            out.append(self.yr_credit)
-            cache.write(json.dumps(out))
-            return out
+                out['data'] = (wind.attrib)
+        out['credit'] = (self.yr_credit)
+        cache.write(json.dumps(out))
+        return out
 
     def wind_direction(self):
         """
@@ -70,23 +60,18 @@ class Yr:
         location = Location(self.location, self.language).find()
         data = (Connect(location).read())
         data = (et.fromstring(data))
-        out = []
+        out = {}
         for parent in data[5].iter('windDirection'):
             if parent.attrib:
-                out.append({
-                    'location': self.location,
-                    'deg': parent.attrib['deg'],
-                    'code': parent.attrib['code'],
-                    'name': parent.attrib['name'],
-                })
-            out.append(self.yr_credit)
-            cache.write(json.dumps(out))
-            return out
+                out['data'] = (parent.attrib)
+        out['credit'] = (self.yr_credit)
+        cache.write(json.dumps(out))
+        return out
 
     def forecast(self):
         cache = Cache(self.location, "forecast")
-        if cache.exists() and cache.is_fresh():
-            return json.loads(cache.read())
+        #if cache.exists() and cache.is_fresh():
+        #    return json.loads(cache.read())
 
         location = Location(self.location, self.language).find()
         data = (Connect(location).read())
@@ -101,9 +86,11 @@ class Yr:
                     child[1].tag: child[1].text,
                     'location': self.location,
                 })
-        days.append(self.yr_credit)
-        cache.write(json.dumps(days))
-        return days
+        out = {}
+        out['data'] = (days)
+        out['credit'] = (self.yr_credit)
+        cache.write(json.dumps(out))
+        return out
 
     def observations(self):
         cache = Cache(self.location, "observations")
