@@ -4,7 +4,7 @@ Library for the norwegian wheather service yr.no in python
 
 ### Usage
 ```python
-from libyr import Yr
+from yr.libyr import Yr
 import json
 
 weather = Yr('Oslo', 'en')

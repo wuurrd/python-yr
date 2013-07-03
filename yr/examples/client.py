@@ -7,16 +7,16 @@ sys.path.append(
 from libyr import Yr
 import json
 
-weather = Yr('Oslo', 'nb')
+weather = Yr('Larvik', 'nb')
 temperature = weather.temperature()
 windspeed = weather.wind_speed()
 winddirection = weather.wind_direction()
 forecast = weather.forecast()
 observations = weather.observations()
 
-print "wind speed:", windspeed
-print "wind direction:", winddirection
-print "temperature:", temperature
-print "forecast", forecast
-print "observations", observations
-print json.dumps(temperature, indent=4)
+#print "wind speed:", windspeed
+#print "wind direction:", winddirection
+#print "temperature:", temperature
+#print "forecast:", forecast
+#print "observations:", observations
+print json.dumps(observations, indent=4)
