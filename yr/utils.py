@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 import os, errno, datetime, hashlib, tempfile
 import urllib2 as urllib
