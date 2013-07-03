@@ -39,7 +39,7 @@ class Connect:
     def __init__(self, location):
         self.location = (location)
         self.url = (self.location)
-        self.loc_hash = hashlib.sha256(self.location).hexdigest()
+        self.loc_hash = hashlib.sha256(self.location).hexdigest()[:12]
 
     def read(self):
         cache = Cache(self.loc_hash, "varsel")
