@@ -70,8 +70,8 @@ class Yr:
 
     def forecast(self):
         cache = Cache(self.location, "forecast")
-        #if cache.exists() and cache.is_fresh():
-        #    return json.loads(cache.read())
+        if cache.exists() and cache.is_fresh():
+            return json.loads(cache.read())
 
         location = Location(self.location, self.language).find()
         data = (Connect(location).read())
@@ -101,12 +101,13 @@ class Yr:
         data = (Connect(location).read())
         data = (et.fromstring(data))
         observations = {}
+        observations['data'] = {}
         for parent in data[6].iter('weatherstation'):
             stno = parent.attrib['stno']
-            observations[stno] = parent.attrib
+            observations['data'][stno] = parent.attrib
             for child in parent:
                 tag = child.tag
-                observations[stno][tag] = child.attrib
+                observations['data'][stno][tag] = child.attrib
         observations['credit'] = self.yr_credit
         cache.write(json.dumps(observations))
         return observations
