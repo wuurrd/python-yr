@@ -8,6 +8,7 @@ setup(name='python-yr',
       author='Alexander Hansen',
       author_email='alexander.l.hansen@gmail.com',
       url='https://github.com/wckd/python-yr',
-      packages=['Yr'],
+      packages=['yr'],
+      package_data={'': ['places_norway.csv']},
       install_requires=['unicodecsv'],
      )
