@@ -33,7 +33,7 @@ class Yr:
                  })
             out.append(self.yr_credit)
             cache.write(json.dumps(out))
-            return json.dumps(out)
+            return out
 
     def wind_speed(self):
         """
@@ -57,7 +57,7 @@ class Yr:
                 })
             out.append(self.yr_credit)
             cache.write(json.dumps(out))
-            return json.dumps(out)
+            return out
 
     def wind_direction(self):
         """
@@ -81,7 +81,7 @@ class Yr:
                 })
             out.append(self.yr_credit)
             cache.write(json.dumps(out))
-            return json.dumps(out)
+            return out
 
     def forecast(self):
         cache = Cache(self.location, "forecast")
