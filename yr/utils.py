@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import os, errno, datetime, hashlib, tempfile
-import urllib2 as urllib
 import requests
-import unicodecsv
 
 class Location:
     def __init__(self, location, language):
