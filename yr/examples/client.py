@@ -6,7 +6,7 @@ sys.path.append(
 from libyr import Yr
 import json
 
-weather = Yr('Larvik', 'nb')
+weather = Yr('Norge/Telemark/Skien/Skien', 'nb')
 temperature = weather.temperature()
 windspeed = weather.wind_speed()
 winddirection = weather.wind_direction()

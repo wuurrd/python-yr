@@ -14,11 +14,11 @@ class Yr:
         """
         Get temperature from yr and return it.
         """
-        cache = Cache(self.location, "temperature")
+        getlocation = (Location(self.location, self.language).find())
+        cache = Cache(getlocation, "temperature")
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
-
-        getlocation = (Location(self.location, self.language).find())
+        
         data = (Connect(getlocation).read())
         data = (et.fromstring(data)) 
         out = {}
@@ -33,11 +33,11 @@ class Yr:
         """
         Get wind speed from yr.
         """
-        cache = Cache(self.location, "windspeed")
+        getlocation = (Location(self.location, self.language).find())
+        cache = Cache(getlocation, "windspeed")
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
 
-        getlocation = (Location(self.location, self.language).find())
         data = (Connect(getlocation).read())
         data = (et.fromstring(data))
         out = {}
@@ -52,11 +52,11 @@ class Yr:
         """
         Get wind direction from yr.
         """
-        cache = Cache(self.location, "wind_direction")
+        getlocation = (Location(self.location, self.language).find())
+        cache = Cache(getlocation, "wind_direction")
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
 
-        getlocation = (Location(self.location, self.language).find())
         data = (Connect(getlocation).read())
         data = (et.fromstring(data))
         out = {}
@@ -68,11 +68,11 @@ class Yr:
         return out
 
     def forecast(self):
-        cache = Cache(self.location, "forecast")
+        getlocation = (Location(self.location, self.language).find())
+        cache = Cache(getlocation, "forecast")
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
 
-        getlocation = (Location(self.location, self.language).find())
         data = (Connect(getlocation).read())
         data = (et.fromstring(data))
         days = []
@@ -91,11 +91,11 @@ class Yr:
         return out
 
     def observations(self):
-        cache = Cache(self.location, "observations")
+        getlocation = (Location(self.location, self.language).find())
+        cache = Cache(getlocation, "observations")
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
 
-        getlocation = (Location(self.location, self.language).find())
         data = (Connect(getlocation).read())
         data = (et.fromstring(data))
         observations = {}
@@ -111,11 +111,11 @@ class Yr:
         return observations
 
     def location_info(self):
-        cache = Cache(self.location, "location")
+        getlocation = (Location(self.location, self.language).find())
+        cache = Cache(getlocation, "location")
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
 
-        getlocation = (Location(self.location, self.language).find())
         data = (Connect(getlocation).read())
         data = (et.fromstring(data))
         location_list = []

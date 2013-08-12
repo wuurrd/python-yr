@@ -7,7 +7,7 @@ Library for the norwegian wheather service yr.no in python
 from yr.libyr import Yr
 import json
 
-weather = Yr('Oslo', 'en')
+weather = Yr('Norge/Oslo/Oslo/Oslo', 'en')
 temperature = weather.temperature()
 
 print json.dumps(temperature, indent=4)

@@ -1,63 +1,49 @@
 # -*- coding: utf-8 -*-
 import os, errno, datetime, hashlib, tempfile
 import urllib2 as urllib
+import requests
 import unicodecsv
 
 class Location:
-    """
-    Internal class used to parse and find places and their api_url
-    find returns the api_url used in the Yr-class.
-    """
     def __init__(self, location, language):
-        self.location = (location)
+        self.location = (location.encode('utf-8'))
         self.language = (language)
+        self.api_url = ("http://www.yr.no/")
 
     def find(self):
-        this_dir, this_filename = os.path.split(__file__)
-        DATA_PATH = os.path.join(this_dir, "data", "places_norway.csv")
-        csv_file = (open(DATA_PATH, 'r'))
-        data = (unicodecsv.reader(csv_file))
-        matches = []
-        for num, row in enumerate(data):
-            if self.location in row[0]:
-                matches.append(row)
-        try:
-            out = matches[0][3]
-            if self.language is ('nb'):
-                out = (matches[0][1])
-            if self.language is ('nn'):
-                out = (matches[0][2])
-            if self.language is ('en'):
-                out = (matches[0][3])
-        except IndexError:
-            pass
-        if out is not None:
-            return out.encode('utf-8')
+        if self.language is ('nb'):
+            place = ("sted/")
+        elif self.language is ('nn'):
+            place = ("stad/")
         else:
-            raise ValueError('Search got nothing')
+            place = ("place/")
+
+        yr_url = (self.api_url+place+self.location+"/varsel.xml")
+        return (yr_url.encode('utf-8'))
 
 class Connect:
     def __init__(self, location):
-        self.location = (location)
-        self.url = (self.location)
-        self.loc_hash = hashlib.sha256(self.location).hexdigest()[:12]
+        self.url = (location)
+        self.loc_hash = hashlib.sha256(self.url).hexdigest()[:12]
 
     def read(self):
         cache = Cache(self.loc_hash, "varsel")
         if cache.exists() and cache.is_fresh():
             return (cache.read())
 
-        req = (urllib.Request(self.url, None, {'user-agent':'yr/wckd'}))
-        opener = (urllib.build_opener())
-        f = (opener.open(req).read())
+        yr = (requests.get(self.url))
+        if not yr.status_code == requests.codes.ok:
+            yr.raise_for_status()
+        f = (yr.content)
         cache.write(f)
         return (cache.read())
 
 class Cache:
     def __init__(self, location, cf):
         self.location = (location)
+        self.loc_hash = hashlib.sha256(self.location).hexdigest()[:12]
         self.temp_dir = (tempfile.gettempdir()+"/")
-        self.cache_file = (self.temp_dir+self.location+"."+cf)
+        self.cache_file = (self.temp_dir+self.loc_hash+"."+cf)
 
     def write(self, data):
         cf = open(self.cache_file, "w")
