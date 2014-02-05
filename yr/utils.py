@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 import os, errno, datetime, hashlib, tempfile
 import requests
 
 class Location:
     def __init__(self, location, language):
-        self.location = (location.encode('utf-8'))
+        self.location = (location)
         self.language = (language)
         self.api_url = ("http://www.yr.no/")
 
@@ -17,12 +17,12 @@ class Location:
             place = ("place/")
 
         yr_url = (self.api_url+place+self.location+"/varsel.xml")
-        return (yr_url.encode('utf-8'))
+        return (yr_url)
 
 class Connect:
     def __init__(self, location):
         self.url = (location)
-        self.loc_hash = hashlib.sha256(self.url).hexdigest()[:12]
+        self.loc_hash = hashlib.sha256(self.url.encode('utf-8')).hexdigest()[:12]
 
     def read(self):
         cache = Cache(self.loc_hash, "varsel")
@@ -32,14 +32,14 @@ class Connect:
         yr = (requests.get(self.url))
         if not yr.status_code == requests.codes.ok:
             yr.raise_for_status()
-        f = (yr.content)
+        f = (yr.text)
         cache.write(f)
         return (cache.read())
 
 class Cache:
     def __init__(self, location, cf):
         self.location = (location)
-        self.loc_hash = hashlib.sha256(self.location).hexdigest()[:12]
+        self.loc_hash = hashlib.sha256(self.location.encode('utf-8')).hexdigest()[:12]
         self.temp_dir = (tempfile.gettempdir()+"/")
         self.cache_file = (self.temp_dir+self.loc_hash+"."+cf)
 
@@ -68,6 +68,6 @@ class Cache:
     def remove(self):
         try:
             os.remove(self.cache_file)
-        except OSError, e:
+        except OSError as e:
             if e.errno != errno.ENOENT:
                 raise
