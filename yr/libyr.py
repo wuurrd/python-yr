@@ -1,26 +1,60 @@
 #!/usr/bin/env python3
 
-from utils import Connect, Location, Cache
-import datetime, json
-import xml.etree.cElementTree as et
-#from bs4 import BeautifulSoup
+import sys, json
+#import xml.etree.cElementTree as et
+from utils import Location, Connect, Cache, Language
 
 class Yr:
 
-    def __init__(self, location, language='en'):
-        self.location = location
+    def xmlsource(self):
+        data = Connect(self.location).read()
+        return data
+
+    def xmltosoup(self, what=None):
+        try:
+            from bs4 import BeautifulSoup
+        except:
+            sys.stderr.write('import error: from bs4 import BeautifulSoup\n')
+            sys.exit(1)
+        if what is None:
+            return BeautifulSoup(self.xmlsource())
+        else:
+            return BeautifulSoup(what)
+
+    def xmltodict(self, what=None):
+        try:
+            import xmltodict
+        except:
+            sys.stderr.write('import error: import xmltodict\n')
+            sys.exit(1)
+        if what is None:
+            return xmltodict.parse(self.xmlsource())
+        else:
+            return xmltodict.parse(what)
+
+    def xmltojson(self, what=None):
+        if what is None:
+            return json.dumps(self.xmltodict())
+        else:
+            return json.dumps(what)
+
+    def __init__(self, location_name, language='en'):
+        self.location_name = location_name
         self.language = language
+        self._ = Language(self.language).get_dictionary()
+        self.location = Location(self.location_name, self.language)
         self.yr_credit = {
-            'text': 'Værvarsel fra yr.no, levert av NRK og Meteorologisk institutt',
+            'text': self._['credit'],
             'url': 'http://www.yr.no/'
         }
         self.yr_credit = None
 
+    """
     def temperature(self):
         '''
         Get temperature from yr and return it.
         '''
-        getlocation = Location(self.location, self.language).find()
+        getlocation = Location(self.location_name, self.language).find()
         cache = Cache(getlocation, 'temperature')
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
@@ -38,7 +72,7 @@ class Yr:
         '''
         Get wind speed from yr.
         '''
-        getlocation = Location(self.location, self.language).find()
+        getlocation = Location(self.location_name, self.language).find()
         cache = Cache(getlocation, 'windspeed')
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
@@ -56,7 +90,7 @@ class Yr:
         '''
         Get wind direction from yr.
         '''
-        getlocation = Location(self.location, self.language).find()
+        getlocation = Location(self.location_name, self.language).find()
         cache = Cache(getlocation, 'wind_direction')
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
@@ -71,7 +105,7 @@ class Yr:
         return out
 
     def forecast(self):
-        getlocation = Location(self.location, self.language).find()
+        getlocation = Location(self.location_name, self.language).find()
         cache = Cache(getlocation, 'forecast')
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
@@ -93,7 +127,7 @@ class Yr:
         return out
 
     def observations(self):
-        getlocation = Location(self.location, self.language).find()
+        getlocation = Location(self.location_name, self.language).find()
         cache = Cache(getlocation, 'observations')
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
@@ -112,7 +146,7 @@ class Yr:
         return observations
 
     def location_info(self):
-        getlocation = Location(self.location, self.language).find()
+        getlocation = Location(self.location_name, self.language).find()
         cache = Cache(getlocation, 'location')
         if cache.exists() and cache.is_fresh():
             return json.loads(cache.read())
@@ -131,3 +165,4 @@ class Yr:
         location['credit'] = self.yr_credit
         cache.write(json.dumps(location))
         return location
+    """

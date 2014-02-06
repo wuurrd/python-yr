@@ -1,39 +1,47 @@
 #!/usr/bin/env python3
 
 import os.path, sys, json, hashlib, requests, tempfile, datetime
-#import errno
 
-def hash(what):
-    result = hashlib.sha256(what.encode('utf-8')).hexdigest()[:12]
-    return result
+class Language:
+
+    def __init__(self, language):
+        self.language = language
+
+    def get_dictionary(self):
+        filename = '../languages/{}.json'.format(self.language) # $$todo$$ ~> repair path!
+        if os.path.exists(filename):
+            with open(filename, mode='r') as f:
+                return json.load(f)
+        else:
+            sys.stderr.write('error: unsupported language ~> {}\n'.format(self.language))
+            sys.exit(1)
 
 class Location:
 
-    def __init__(self, location, language):
-        self.location = location
+    def __init__(self, location_name, language):
+        self.location_name = location_name
         self.language = language
-        filename = '../languages/{}.json'.format(language) # $$todo$$ ~> repair path!
-        if os.path.exists(filename):
-            with open(filename, mode='r') as f:
-                self._ = json.load(f)
-        else:
-            sys.stderr.write('error: unsupported language ~> {}\n'.format(language))
-            sys.exit(1)
+        self._ = Language(self.language).get_dictionary()
+        self.url = self.get_url()
+        self.hash = self.get_hash()
 
-    def find(self):
-        result = 'http://www.yr.no/{place}/{location}/{forecast}.xml'.format(location=self.location, **self._)
+    def get_url(self):
+        result = 'http://www.yr.no/{place}/{location_name}/{forecast}.xml'.format(location_name=self.location_name, **self._)
+        return result
+
+    def get_hash(self):
+        result = hashlib.sha256(self.location_name.encode('utf-8')).hexdigest()[:12]
         return result
 
 class Connect:
 
     def __init__(self, location):
         self.location = location
-        self.loc_hash = hash(location)
 
     def read(self):
         cache = Cache(self.location, 'forecast')
         if not cache.exists() or not cache.is_fresh():
-            yr = requests.get(self.location)
+            yr = requests.get(self.location.url)
             if not yr.status_code == requests.codes.ok:
                 yr.raise_for_status()
             cache.write(yr.text)
@@ -46,8 +54,7 @@ class Cache:
 
     def __init__(self, location, what):
         self.location = location
-        self.loc_hash = hash(location)
-        self.cache_filename = '{}/{}.{}'.format(tempfile.gettempdir(), self.loc_hash, what)
+        self.cache_filename = '{}/{}.{}'.format(tempfile.gettempdir(), self.location.hash, what)
 
     def write(self, data):
         with open(self.cache_filename, mode='w') as f:
@@ -66,12 +73,3 @@ class Cache:
         with open(self.cache_filename, mode='r') as f:
             data = f.read()
             return data
-
-    '''
-    def remove(self):
-        try:
-            os.remove(self.cache_filename)
-        except OSError as e:
-            if e.errno != errno.ENOENT:
-                raise
-    '''
