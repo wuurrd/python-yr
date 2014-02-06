@@ -7,6 +7,7 @@ from libyr import Yr
 import json
 
 weather = Yr('Norge/Telemark/Skien/Skien', 'nb')
+weather = Yr('Czech_Republic/Prague/Prague')
 temperature = weather.temperature()
 windspeed = weather.wind_speed()
 winddirection = weather.wind_direction()

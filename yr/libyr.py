@@ -4,7 +4,7 @@ import datetime, json
 import xml.etree.cElementTree as et
 
 class Yr:
-    def __init__(self, location, language):
+    def __init__(self, location, language='en'):
         self.location = (location)
         self.language = (language)
         self.yr_credit = {"text": "Værvarsel fra yr.no, levert av NRK og Meteorologisk institutt", 
