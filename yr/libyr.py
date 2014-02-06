@@ -3,8 +3,10 @@
 from utils import Connect, Location, Cache
 import datetime, json
 import xml.etree.cElementTree as et
+#from bs4 import BeautifulSoup
 
 class Yr:
+
     def __init__(self, location, language='en'):
         self.location = location
         self.language = language
@@ -12,6 +14,7 @@ class Yr:
             'text': 'Værvarsel fra yr.no, levert av NRK og Meteorologisk institutt',
             'url': 'http://www.yr.no/'
         }
+        self.yr_credit = None
 
     def temperature(self):
         '''
