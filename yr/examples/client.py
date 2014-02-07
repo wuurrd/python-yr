@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 import sys
 import os.path
 sys.path.append(
@@ -13,9 +13,9 @@ winddirection = weather.wind_direction()
 forecast = weather.forecast()
 observations = weather.observations()
 
-#print "wind speed:", windspeed
-#print "wind direction:", winddirection
-#print "temperature:", temperature
-#print "forecast:", forecast
-#print "observations:", observations
-print json.dumps(observations, indent=4)
+#print("wind speed:", windspeed)
+#print("wind direction:", winddirection)
+#print("temperature:", temperature)
+#print("forecast:", forecast)
+#print("observations:", observations)
+print(json.dumps(observations, indent=4))

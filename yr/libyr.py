@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 from utils import Connect, Location, Cache
 import datetime, json
 import xml.etree.cElementTree as et
 
 class Yr:
     def __init__(self, location, language):
-        self.location = (location.decode('utf-8'))
+        self.location = (location)
         self.language = (language)
         self.yr_credit = {"text": "Værvarsel fra yr.no, levert av NRK og Meteorologisk institutt", 
                             "url": "http://www.yr.no/", }
