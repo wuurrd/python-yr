@@ -1,6 +1,7 @@
 python-yr
 =================
-Library for the norwegian wheather service yr.no in python
+Library for the norwegian wheather service yr.no in python.
+Pull requests are very welcomed! :-)
 
 ### Usage
 ```python
