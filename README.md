@@ -12,6 +12,8 @@ temperature = weather.temperature()
 
 print json.dumps(temperature, indent=4)
 ```
+More example-usage can be found in the examples-folder :-)
+
 ### This returns
 ```json
 {
