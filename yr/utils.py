@@ -25,7 +25,7 @@ class Connect:
         self.loc_hash = hashlib.sha256(self.url.encode('utf-8')).hexdigest()[:12]
 
     def read(self):
-        cache = Cache(self.loc_hash, "varsel")
+        cache = Cache(self.url, "varsel")
         if cache.exists() and cache.is_fresh():
             return (cache.read())
 
