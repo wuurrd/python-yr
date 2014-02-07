@@ -9,5 +9,5 @@ setup(name='python-yr',
       author_email='alexander.l.hansen@gmail.com',
       url='https://github.com/wckd/python-yr',
       packages=['yr'],
-      install_requires=['unicodecsv', 'requests'],
+      install_requires=['requests'],
      )
