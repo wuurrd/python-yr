@@ -1,73 +1,75 @@
 #!/usr/bin/env python3
-import os, errno, datetime, hashlib, tempfile
-import requests
+
+import os.path, sys, json, hashlib, requests, tempfile, datetime
+
+class Language:
+
+    def __init__(self, language):
+        self.language = language
+
+    def get_dictionary(self):
+        filename = '../languages/{}.json'.format(self.language) # $$todo$$ ~> repair path!
+        if os.path.exists(filename):
+            with open(filename, mode='r') as f:
+                return json.load(f)
+        else:
+            sys.stderr.write('error: unsupported language ~> {}\n'.format(self.language))
+            sys.exit(1)
 
 class Location:
-    def __init__(self, location, language):
-        self.location = (location)
-        self.language = (language)
-        self.api_url = ("http://www.yr.no/")
 
-    def find(self):
-        if self.language is ('nb'):
-            place = ("sted/")
-        elif self.language is ('nn'):
-            place = ("stad/")
-        else:
-            place = ("place/")
+    def __init__(self, location_name, language):
+        self.location_name = location_name
+        self.language = language
+        self._ = Language(self.language).get_dictionary()
+        self.url = self.get_url()
+        self.hash = self.get_hash()
 
-        yr_url = (self.api_url+place+self.location+"/varsel.xml")
-        return (yr_url)
+    def get_url(self):
+        result = 'http://www.yr.no/{place}/{location_name}/{forecast}.xml'.format(location_name=self.location_name, **self._)
+        return result
+
+    def get_hash(self):
+        result = hashlib.sha256(self.location_name.encode('utf-8')).hexdigest()[:12]
+        return result
 
 class Connect:
+
     def __init__(self, location):
-        self.url = (location)
-        self.loc_hash = hashlib.sha256(self.url.encode('utf-8')).hexdigest()[:12]
+        self.location = location
 
     def read(self):
-        cache = Cache(self.url, "varsel")
-        if cache.exists() and cache.is_fresh():
-            return (cache.read())
-
-        yr = (requests.get(self.url))
-        if not yr.status_code == requests.codes.ok:
-            yr.raise_for_status()
-        f = (yr.text)
-        cache.write(f)
-        return (cache.read())
+        cache = Cache(self.location, 'forecast')
+        if not cache.exists() or not cache.is_fresh():
+            yr = requests.get(self.location.url)
+            if not yr.status_code == requests.codes.ok:
+                yr.raise_for_status()
+            cache.write(yr.text)
+        data = cache.read()
+        return data
 
 class Cache:
-    def __init__(self, location, cf):
-        self.location = (location)
-        self.loc_hash = hashlib.sha256(self.location.encode('utf-8')).hexdigest()[:12]
-        self.temp_dir = (tempfile.gettempdir()+"/")
-        self.cache_file = (self.temp_dir+self.loc_hash+"."+cf)
+
+    cache_timeout = 30 # cache timeout in minutes
+
+    def __init__(self, location, what):
+        self.location = location
+        self.cache_filename = '{}/{}.{}'.format(tempfile.gettempdir(), self.location.hash, what)
 
     def write(self, data):
-        cf = open(self.cache_file, "w")
-        cf.write(data)
-        cf.close()
+        with open(self.cache_filename, mode='w') as f:
+            f.write(data)
 
     def is_fresh(self):
-        modified = (os.path.getmtime(self.cache_file))
-        out = False
-        if datetime.datetime.now() - datetime.datetime.fromtimestamp(modified) <= datetime.timedelta(minutes = 10):
-            out = True
-        return out
+        modified = datetime.datetime.fromtimestamp(os.path.getmtime(self.cache_filename))
+        result = datetime.datetime.now() - modified <= datetime.timedelta(minutes=self.cache_timeout)
+        return result
 
     def exists(self):
-        if os.path.isfile(self.cache_file):
-            return True
-        else:
-            return False
+        result = os.path.isfile(self.cache_filename)
+        return result
 
     def read(self):
-        cf = open(self.cache_file).read()
-        return cf
-
-    def remove(self):
-        try:
-            os.remove(self.cache_file)
-        except OSError as e:
-            if e.errno != errno.ENOENT:
-                raise
+        with open(self.cache_filename, mode='r') as f:
+            data = f.read()
+            return data
