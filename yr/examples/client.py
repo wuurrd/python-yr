@@ -22,12 +22,13 @@ weather = Yr('Czech_Republic/Prague/Prague')
 #print(json.dumps(observations, indent=4))
 
 x = weather.xmltosoup()
+#print x
 x = str(x.forecast.tabular.time)
-print(x)
+#print(x)
 
 #x = weather.xmlsource()
 #print(x)
 x = weather.xmltodict(x)
 print(x)
-x = weather.xmltojson(x)
-print(x)
+#x = weather.xmltojson(x)
+#print(x)
