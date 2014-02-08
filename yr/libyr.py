@@ -40,8 +40,8 @@ class Yr:
         soup = self.xmltosoup()
         tabular = str(soup.forecast.tabular.time)
         as_dict = self.xmltodict(tabular)
-        if json:
-            return json.dumps(as_dict)
+        if as_json:
+            return json.dumps(as_dict, indent=4)
         else:
             return as_dict
 
