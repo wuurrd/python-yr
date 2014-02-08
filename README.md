@@ -7,7 +7,6 @@ Pull requests are very welcomed! :-)
 ### Usage
 ```python
 from yr.libyr import Yr
-import json
 
 weather = Yr('Norge/Telemark/Skien/Skien')
 now_json = weather.now(as_json=True)
