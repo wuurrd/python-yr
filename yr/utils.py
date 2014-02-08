@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import os.path, sys, json, hashlib, requests, tempfile, datetime
 
 class Language:
@@ -44,7 +43,7 @@ class Connect:
             yr = requests.get(self.location.url)
             if not yr.status_code == requests.codes.ok:
                 yr.raise_for_status()
-            cache.write(yr.text)
+            cache.write(yr.text.encode('utf-8'))
         data = cache.read()
         return data
 

@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-
 import sys, json
-#import xml.etree.cElementTree as et
 from utils import Location, Connect, Cache, Language
 
 class Yr:
@@ -38,6 +36,15 @@ class Yr:
         else:
             return json.dumps(what)
 
+    def now(self, as_json=False):
+        soup = self.xmltosoup()
+        tabular = str(soup.forecast.tabular.time)
+        as_dict = self.xmltodict(tabular)
+        if json:
+            return json.dumps(as_dict)
+        else:
+            return as_dict
+
     def __init__(self, location_name, language='en'):
         self.location_name = location_name
         self.language = language
@@ -47,7 +54,6 @@ class Yr:
             'text': self._['credit'],
             'url': 'http://www.yr.no/'
         }
-        self.yr_credit = None
 
     """
     def temperature(self):
