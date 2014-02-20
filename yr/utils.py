@@ -43,7 +43,7 @@ class Connect:
             yr = requests.get(self.location.url)
             if not yr.status_code == requests.codes.ok:
                 yr.raise_for_status()
-            cache.write(yr.text.encode('utf-8'))
+            cache.write(yr.text) #.encode('utf-8') $$bug$$ ~> create empty forecast file in my /tmp/
         data = cache.read()
         return data
 
