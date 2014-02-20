@@ -7,7 +7,8 @@ class Language:
         self.language = language
 
     def get_dictionary(self):
-        filename = '../languages/{}.json'.format(self.language) # $$todo$$ ~> repair path!
+        path = os.path.abspath(os.path.dirname(__file__))
+        filename = '{}/languages/{}.json'.format(path, self.language)
         if os.path.exists(filename):
             with open(filename, mode='r') as f:
                 return json.load(f)
