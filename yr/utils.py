@@ -10,7 +10,7 @@ class Language:
         path = os.path.abspath(os.path.dirname(__file__))
         filename = '{}/languages/{}.json'.format(path, self.language)
         if os.path.exists(filename):
-            with open(filename, mode='r') as f:
+            with open(filename, mode='r', encoding='utf-8') as f:
                 return json.load(f)
         else:
             sys.stderr.write('error: unsupported language ~> {}\n'.format(self.language))
@@ -57,7 +57,7 @@ class Cache:
         self.cache_filename = '{}/{}.{}'.format(tempfile.gettempdir(), self.location.hash, what)
 
     def write(self, data):
-        with open(self.cache_filename, mode='w') as f:
+        with open(self.cache_filename, mode='w', encoding='utf-8') as f:
             f.write(data)
 
     def is_fresh(self):
@@ -70,6 +70,6 @@ class Cache:
         return result
 
     def read(self):
-        with open(self.cache_filename, mode='r') as f:
+        with open(self.cache_filename, mode='r', encoding='utf-8') as f:
             data = f.read()
             return data

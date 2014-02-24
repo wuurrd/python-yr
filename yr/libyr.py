@@ -11,7 +11,7 @@ class Yr:
     def xmltosoup(self, xml=None):
         try:
             from bs4 import BeautifulSoup
-        except:
+        except ImportError:
             sys.stderr.write('import error: from bs4 import BeautifulSoup\n')
             sys.exit(1)
         if xml is None:
@@ -22,7 +22,7 @@ class Yr:
     def xmltodict(self, xml=None):
         try:
             import xmltodict
-        except:
+        except ImportError:
             sys.stderr.write('import error: import xmltodict\n')
             sys.exit(1)
         if xml is None:
