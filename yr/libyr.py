@@ -8,42 +8,38 @@ class Yr:
         data = Connect(self.location).read()
         return data
 
-    def xmltosoup(self, what=None):
+    def xmltosoup(self, xml=None):
         try:
             from bs4 import BeautifulSoup
-        except:
+        except ImportError:
             sys.stderr.write('import error: from bs4 import BeautifulSoup\n')
             sys.exit(1)
-        if what is None:
+        if xml is None:
             return BeautifulSoup(self.xmlsource())
         else:
-            return BeautifulSoup(what)
+            return BeautifulSoup(xml)
 
-    def xmltodict(self, what=None):
+    def xmltodict(self, xml=None):
         try:
             import xmltodict
-        except:
+        except ImportError:
             sys.stderr.write('import error: import xmltodict\n')
             sys.exit(1)
-        if what is None:
+        if xml is None:
             return xmltodict.parse(self.xmlsource())
         else:
-            return xmltodict.parse(what)
+            return xmltodict.parse(xml)
 
-    def xmltojson(self, what=None):
-        if what is None:
-            return json.dumps(self.xmltodict())
-        else:
-            return json.dumps(what)
+    def xmltojson(self, xml=None):
+        return json.dumps(self.xmltodict(xml), indent=4)
 
-    def now(self, as_json=False):
+    def now(self, as_json=False): # default is return result as dict ;)
         soup = self.xmltosoup()
-        tabular = str(soup.forecast.tabular.time)
-        as_dict = self.xmltodict(tabular)
+        xml = str(soup.forecast.tabular.time)
         if as_json:
-            return json.dumps(as_dict, indent=4)
+            return self.xmltojson(xml)
         else:
-            return as_dict
+            return self.xmltodict(xml)
 
     def __init__(self, location_name, language='en'):
         self.location_name = location_name

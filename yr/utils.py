@@ -7,9 +7,10 @@ class Language:
         self.language = language
 
     def get_dictionary(self):
-        filename = '../languages/{}.json'.format(self.language) # $$todo$$ ~> repair path!
+        path = os.path.abspath(os.path.dirname(__file__))
+        filename = '{}/languages/{}.json'.format(path, self.language)
         if os.path.exists(filename):
-            with open(filename, mode='r') as f:
+            with open(filename, mode='r', encoding='utf-8') as f:
                 return json.load(f)
         else:
             sys.stderr.write('error: unsupported language ~> {}\n'.format(self.language))
@@ -43,7 +44,7 @@ class Connect:
             yr = requests.get(self.location.url)
             if not yr.status_code == requests.codes.ok:
                 yr.raise_for_status()
-            cache.write(yr.text.encode('utf-8'))
+            cache.write(yr.text) #.encode('utf-8') $$bug$$ ~> create empty forecast file in my /tmp/
         data = cache.read()
         return data
 
@@ -56,7 +57,7 @@ class Cache:
         self.cache_filename = '{}/{}.{}'.format(tempfile.gettempdir(), self.location.hash, what)
 
     def write(self, data):
-        with open(self.cache_filename, mode='w') as f:
+        with open(self.cache_filename, mode='w', encoding='utf-8') as f:
             f.write(data)
 
     def is_fresh(self):
@@ -69,6 +70,6 @@ class Cache:
         return result
 
     def read(self):
-        with open(self.cache_filename, mode='r') as f:
+        with open(self.cache_filename, mode='r', encoding='utf-8') as f:
             data = f.read()
             return data
