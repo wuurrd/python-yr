@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import sys, json
-from utils import Location, Connect, Cache, Language
+from yr.utils import Location, Connect, Cache, Language
 
 class Yr:
 
