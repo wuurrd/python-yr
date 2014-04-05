@@ -8,6 +8,7 @@ setup(name='python-yr',
       author='Alexander Hansen, idxxx23 @ github',
       author_email='alexander.l.hansen@gmail.com',
       url='https://github.com/wckd/python-yr',
-      packages=['yr', 'yr.languages'],
+      packages=['yr'],
+      package_data={'yr': ['languages/*.json']},
       install_requires=['requests', 'xmltodict', 'beautifulsoup4'],
      )
