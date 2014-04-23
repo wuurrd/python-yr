@@ -14,7 +14,7 @@ setup(name='python-yr',
          'Operating System :: POSIX',
          'Programming Language :: Python',
          'Topic :: Internet',
-      ]
+      ],
       packages=['yr'],
       package_data={'yr': ['languages/*.json']},
       install_requires=['requests', 'xmltodict', 'beautifulsoup4'],
