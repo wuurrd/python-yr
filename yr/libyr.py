@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys, json
 from yr.utils import Location, Connect, Cache, Language
+from xml.etree import ElementTree as et
 
 class Yr:
 
@@ -69,25 +70,26 @@ class Yr:
         out['credit'] = self.yr_credit
         cache.write(json.dumps(out))
         return out
+    """
 
     def wind_speed(self):
         '''
         Get wind speed from yr.
         '''
-        getlocation = Location(self.location_name, self.language).find()
-        cache = Cache(getlocation, 'windspeed')
-        if cache.exists() and cache.is_fresh():
-            return json.loads(cache.read())
+        self.location = Location(self.location_name, self.language)
+        getlocation = Location(self.location_name, self.language)
         data = Connect(getlocation).read()
         data = et.fromstring(data)
-        out = {}
-        for parent in data[5].iter('windSpeed'):
-            if parent.attrib:
-                out['data'] = parent.attrib
+        out = {'data': []}
+        for parent in data.find('forecast').find('tabular').findall('time'):
+            if parent.find('windSpeed') is not None:
+                out['data'].append({'from': parent.attrib['from'],
+                                    'to': parent.attrib['to'],
+                                    'speed': float(parent.find('windSpeed').attrib['mps'])})
         out['credit'] = self.yr_credit
-        cache.write(json.dumps(out))
         return out
 
+    """
     def wind_direction(self):
         '''
         Get wind direction from yr.
